@@ -2,15 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-char* concat(const char *s1, const char *s2)
-{
-    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator
-    //in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
 void escritor(FILE *salidaP, int afirmacion){
     if(afirmacion){
       fprintf(salidaP,"SI\n");
@@ -21,9 +12,9 @@ void escritor(FILE *salidaP, int afirmacion){
     }
 }
 
-void buscador(char* i, char * chain, char* nombreFp, int posLinea, int lines, int cant, int numProceso){
+void buscador(char * chain, char* nombreFp, int posLinea, int lines, int cant, int numProceso){
   char buf[5];
-  char *name = concat(i, "_rp.txt");
+  char *name = "rp.txt";
   FILE *fp = fopen(nombreFp,"r");
   int queLinea = posLinea*cant-cant;
   fseek(fp,queLinea,SEEK_CUR); //Ver si cambia, se posiciona en la linea correcta
@@ -52,16 +43,7 @@ void buscador(char* i, char * chain, char* nombreFp, int posLinea, int lines, in
 
   }
 
-int main(int argc, char **argv){
-
-  char *file_name = argv[1]; //entrada
-  int start_line = atoi(argv[2]); //pos
-  int lines_number = atoi(argv[3]); // lineas
-  char *i = argv[4]; // id
-  char *searched_string = argv[5]; //cadena
-
- // Ejmplo llamada con argv   --->  ./comparador ejemplo.txt 1 5 0001 AAAA
-
+int main(){
  char * cadena = "AAAA";
  char * entrada = "ejemplo1.txt";
   int pos = 0;
@@ -69,6 +51,6 @@ int main(int argc, char **argv){
   int id = 0;
 
 
-  buscador(i,"AAAA",entrada,1,10,62,1); // posicion 0, lineas 10, 60 caracteres
+  buscador("AAAA",entrada,1,10,62,1); // posicion 0, lineas 10, 60 caracteres
   return 0;
 }

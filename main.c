@@ -70,7 +70,7 @@ int main (int argc, char **argv) {
 
     int file_lines = countLines(file_name);
 
-    //printf("KUALKER WEA EU PIROCA Lineas_archivo = %d \n", file_lines );
+    printf("KUALKER WEA EU PIROCA Lineas_archivo = %d \n", file_lines );
 
     pid_t wpid;
     int status;
@@ -89,11 +89,12 @@ int main (int argc, char **argv) {
           line_finish = lines_to_read*i +1;
           //printf("line partida = %d, line finish = %d\n", line_start,line_finish);
 
-          printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
+          //printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
 
-          //if()
+          int start_line = getStartLine(i,n_processes,file_lines);
+          int lines_number = getLinesToRead(i,n_processes,file_lines);
 
-        //  execlp("comparator", "comparator",file_name, (const char *)NULL);
+         execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
 
 
 
@@ -143,7 +144,6 @@ int getLinesToRead(int i,int n_processes, int file_lines ){
   return line;
 
 }
-
 
 int countLines(const char *file_name){
      int ch = 0;
