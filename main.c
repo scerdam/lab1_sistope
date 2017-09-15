@@ -89,12 +89,23 @@ int main (int argc, char **argv) {
           line_finish = lines_to_read*i +1;
           //printf("line partida = %d, line finish = %d\n", line_start,line_finish);
 
-          //printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
+          printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
 
           int start_line = getStartLine(i,n_processes,file_lines);
           int lines_number = getLinesToRead(i,n_processes,file_lines);
 
-         execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
+
+          char str_i[12];
+          sprintf(str_i, "%d", i);
+
+          char str_start_line[12];
+          sprintf(str_start_line, "%d", start_line);
+
+          char str_lines_number[12];
+          sprintf(str_lines_number, "%d", lines_number);
+
+         //execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
+         execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string, (const char *)NULL);
 
 
 
