@@ -60,13 +60,14 @@ int main(int argc, char **argv){
 
     char *file_name = argv[1]; //entrada
     int start_line = atoi(argv[2]); //pos
-    int lines_number = atoi(argv[3]); // lineas
-    char *i = argv[4]; // id
+    int lines_number = atoi(argv[3]); // lineas a leer
+    int i = atoi(argv[4]); // id
     char *searched_string = argv[5]; //cadena
+    int length_line_file = atoi(argv[6]); // tamaño(largo)
 
    // Ejmplo llamada con argv   --->  ./comparador ejemplo.txt 1 5 0001 AAAA
 
 
-  buscador(atoi(i),searched_string,file_name,start_line,lines_number,60); // posicion 0, lineas 10, 60 caracteres
+  buscador(i,searched_string,file_name,start_line,lines_number,length_line_file); // posicion 0, lineas 10, 60 caracteres
   return 0;
 }

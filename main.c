@@ -5,13 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// LLamar al programa comparador dentro del fork una vez creado el proceso
-// fork();
-//     execv("./", "comparator_program", size_line_file, searched_string);
-
-int k = 5; // global variable
-int line_start = 0;
-int line_finish = 0;
+// int line_start = 0;
+// int line_finish = 0;
 
 int countLines(const char *file_name);
 int getStartLine(int i,int n_processes, int file_lines );
@@ -20,7 +15,7 @@ int getLinesToRead(int i,int n_processes, int file_lines );
 int main (int argc, char **argv) {
 
   char *file_name, *searched_string = NULL;
-  int n_processes, size_line_file, flag_show_results = 0;
+  int n_processes, length_line_file, flag_show_results = 0;
 
 
   int index;
@@ -38,7 +33,7 @@ int main (int argc, char **argv) {
         n_processes = atoi(optarg);
         break;
       case 'c':
-        size_line_file = atoi(optarg);
+        length_line_file = atoi(optarg);
         break;
       case 'p':
         searched_string = optarg;
@@ -77,16 +72,15 @@ int main (int argc, char **argv) {
 
     int i=0;
 
-    //int line_files_aux =
-    int lines_to_read = file_lines/n_processes;
-    line_start = 0;
-    line_finish = lines_to_read;
+    // int lines_to_read = file_lines/n_processes;
+    // line_start = 0;
+    // line_finish = lines_to_read;
 
     for(i = 0; i<n_processes; i++){
       if(fork() == 0){
 
-          line_start = line_finish;
-          line_finish = lines_to_read*i +1;
+          //line_start = line_finish;
+          //line_finish = lines_to_read*i +1;
           //printf("line partida = %d, line finish = %d\n", line_start,line_finish);
 
           printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
@@ -95,17 +89,20 @@ int main (int argc, char **argv) {
           int lines_number = getLinesToRead(i,n_processes,file_lines);
 
 
-          char str_i[12];
+          char str_i[15];
           sprintf(str_i, "%d", i);
 
-          char str_start_line[12];
+          char str_start_line[15];
           sprintf(str_start_line, "%d", start_line);
 
-          char str_lines_number[12];
+          char str_lines_number[15];
           sprintf(str_lines_number, "%d", lines_number);
 
+          char str_length_line_file[15];
+          sprintf(str_length_line_file, "%d", length_line_file);
+
          //execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
-         execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string, (const char *)NULL);
+         execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string,str_length_line_file, (const char *)NULL);
 
 
 
