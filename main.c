@@ -61,7 +61,16 @@ int main (int argc, char **argv) {
 
   for (index = optind; index < argc; index++)
     printf ("No existe opcion para agumento: %s\n", argv[index]);
+    pid_t p_compiler;
+    p_compiler =fork();
+    if(p_compiler==0){
 
+      execlp("gcc", "gcc","-o", "comparator", "comparador2.c",(const char *)NULL);
+      exit(0);
+
+    }
+    int returnStatus;
+    waitpid(p_compiler, &returnStatus, 0); 
 
     int file_lines = countLines(file_name);
 
@@ -102,7 +111,7 @@ int main (int argc, char **argv) {
           sprintf(str_length_line_file, "%d", length_line_file);
 
          //execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
-         execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string,str_length_line_file, (const char *)NULL);
+          execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string,str_length_line_file, (const char *)NULL);
 
 
 
