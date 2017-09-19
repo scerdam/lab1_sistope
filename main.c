@@ -5,18 +5,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// int line_start = 0;
-// int line_finish = 0;
-
 int countLines(const char *file_name);
 int getStartLine(int i,int n_processes, int file_lines );
 int getLinesToRead(int i,int n_processes, int file_lines );
 
-int main (int argc, char **argv) {
+int main (int argc, char **argv){
 
   char *file_name, *searched_string = NULL;
   int n_processes, length_line_file, flag_show_results = 0;
-
 
   int index;
   int c;
@@ -54,23 +50,24 @@ int main (int argc, char **argv) {
       default:
         abort ();
       }
-//
-//  printf ("file = %s, searched_string = %s, n_processes = %d,  size_line_file = %d, flag_show_results = %d\n",
-//          file, searched_string, n_processes, size_line_file, flag_show_results );
-//
+
 
   for (index = optind; index < argc; index++)
     printf ("No existe opcion para agumento: %s\n", argv[index]);
+
+    int status_p_compiler;
     pid_t p_compiler;
     p_compiler =fork();
     if(p_compiler==0){
 
-      execlp("gcc", "gcc","-o", "comparator", "comparador2.c",(const char *)NULL);
+      execlp("gcc", "gcc","-o", "comparator", "comparador2.c",(const char *)NULL);   //Proceso que compila el programa comparador antes de crear los procesos que lo usaran
       exit(0);
-
     }
-    int returnStatus;
-    waitpid(p_compiler, &returnStatus, 0); 
+
+
+    waitpid(p_compiler, &status_p_compiler, 0); //El proceso padre espera al proceso que compila el programa comparador
+
+
 
     int file_lines = countLines(file_name);
 
