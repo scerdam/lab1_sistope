@@ -67,7 +67,6 @@ int main(int argc, char **argv){
 
    // Ejmplo llamada con argv   --->  ./comparador ejemplo.txt 1 5 0001 AAAA
 
-
   buscador(i,searched_string,file_name,start_line,lines_number,length_line_file); // posicion 0, lineas 10, 60 caracteres
   return 0;
 }

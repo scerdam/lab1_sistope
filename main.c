@@ -52,77 +52,55 @@ int main (int argc, char **argv){
       }
 
 
-  for (index = optind; index < argc; index++)
-    printf ("No existe opcion para agumento: %s\n", argv[index]);
+  for (index = optind; index < argc; index++) printf ("No existe opcion para agumento: %s\n", argv[index]);
 
-    int status_p_compiler;
-    pid_t p_compiler;
-    p_compiler =fork();
-    if(p_compiler==0){
+  int status_p_compiler;
+  pid_t p_compiler;
+  p_compiler =fork();
 
-      execlp("gcc", "gcc","-o", "comparator", "comparador2.c",(const char *)NULL);   //Proceso que compila el programa comparador antes de crear los procesos que lo usaran
+  if(p_compiler==0){
+    execlp("gcc", "gcc","-o", "comparator", "comparador.c",(const char *)NULL);   //Proceso que compila el programa comparador antes de crear los procesos que lo usaran
+    exit(0);
+  }
+
+  int file_lines = countLines(file_name);  //mientras el proceso hijo compila el comparador contamos las lineas del archivo de entrada
+
+  waitpid(p_compiler, &status_p_compiler, 0); //El proceso padre espera al proceso que compila el programa comparador
+
+  pid_t wpid;
+  int status;
+
+  int i=0;
+
+  for(i = 0; i<n_processes; i++){
+    if(fork() == 0){
+
+      //printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
+
+      int start_line = getStartLine(i,n_processes,file_lines);
+      int lines_number = getLinesToRead(i,n_processes,file_lines);
+
+      char str_i[15];   // Se parsean los datos que entraran como argumento al programa comparador
+      sprintf(str_i, "%d", i);
+
+      char str_start_line[15];
+      sprintf(str_start_line, "%d", start_line);
+
+      char str_lines_number[15];
+      sprintf(str_lines_number, "%d", lines_number);
+
+      char str_length_line_file[15];
+      sprintf(str_length_line_file, "%d", length_line_file);
+
+      execlp("./comparator", "comparator", file_name, str_start_line, str_lines_number,str_i, searched_string,str_length_line_file, (const char *)NULL);
+
       exit(0);
     }
+  }
 
+  while ((wpid = wait(&status)) > 0);
 
-    waitpid(p_compiler, &status_p_compiler, 0); //El proceso padre espera al proceso que compila el programa comparador
-
-
-
-    int file_lines = countLines(file_name);
-
-    printf("KUALKER WEA EU PIROCA Lineas_archivo = %d \n", file_lines );
-
-    pid_t wpid;
-    int status;
-
-    int i=0;
-
-    // int lines_to_read = file_lines/n_processes;
-    // line_start = 0;
-    // line_finish = lines_to_read;
-
-    for(i = 0; i<n_processes; i++){
-      if(fork() == 0){
-
-          //line_start = line_finish;
-          //line_finish = lines_to_read*i +1;
-          //printf("line partida = %d, line finish = %d\n", line_start,line_finish);
-
-          printf("Proceso %d , linea de partida = %d, lineas a escanear = %d\n", i, getStartLine(i,n_processes,file_lines),getLinesToRead(i,n_processes,file_lines));
-
-          int start_line = getStartLine(i,n_processes,file_lines);
-          int lines_number = getLinesToRead(i,n_processes,file_lines);
-
-
-          char str_i[15];
-          sprintf(str_i, "%d", i);
-
-          char str_start_line[15];
-          sprintf(str_start_line, "%d", start_line);
-
-          char str_lines_number[15];
-          sprintf(str_lines_number, "%d", lines_number);
-
-          char str_length_line_file[15];
-          sprintf(str_length_line_file, "%d", length_line_file);
-
-         //execlp("./comparator", "comparator",file_name, start_line, lines_number,i, searched_string, (const char *)NULL);
-          execlp("./comparator", "comparator",file_name, str_start_line, str_lines_number,str_i, searched_string,str_length_line_file, (const char *)NULL);
-
-
-
-
-          // printf("child %d %d\n", i, ++k);
-          // sleep(1);
-          // printf("done %d\n",i);
-          exit(0);
-      }
-    }
-
-    while ((wpid = wait(&status)) > 0);
-
-    //printf ("Esto siempre se imprime al final \n");
+  // Resto del codigo
 
   return 0;
 }
@@ -177,4 +155,4 @@ int countLines(const char *file_name){
      fclose(fileHandle);
 
      return count;
-  }
+}
