@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 int countLines(const char *file_name);
 int getStartLine(int i,int n_processes, int file_lines );
 int getLinesToRead(int i,int n_processes, int file_lines );
+char* concat(const char *s1, const char *s2);
 
 int main (int argc, char **argv){
 
@@ -98,9 +100,42 @@ int main (int argc, char **argv){
     }
   }
 
-  while ((wpid = wait(&status)) > 0);
+  while ((wpid = wait(&status)) > 0);  // Se espera a que todos los procesos hijos terminen para continuar
 
-  // Resto del codigo
+  char *output_file_name = concat("rc_", searched_string);
+  output_file_name = concat(output_file_name, ".txt");
+
+
+  char *input_file_name = concat("rp_", searched_string);
+  input_file_name = concat(input_file_name, "_");
+
+
+  FILE *file_in, *file_out;
+  file_out = fopen(output_file_name, "w");
+
+  for(i = 0; i<n_processes; i++){
+    int c;
+
+    char str_id[15];
+    sprintf(str_id, "%d", i);
+
+    char *input_file_name_aux = concat(input_file_name, str_id);
+    input_file_name_aux = concat(input_file_name_aux, ".txt");
+
+    file_in = fopen(input_file_name_aux, "r");
+    if (file_in) {
+        while ((c = getc(file_in)) != EOF){
+          if(flag_show_results) putchar(c);
+          fputc(c,file_out);
+        }
+
+        fclose(file_in);
+        free(input_file_name_aux);
+    }
+  }
+  fclose(file_out);
+  free(output_file_name);
+  free(input_file_name);
 
   return 0;
 }
@@ -137,7 +172,7 @@ int getLinesToRead(int i,int n_processes, int file_lines ){
 
 }
 
-int countLines(const char *file_name){
+int countLines(const char *file_name){ // funcion para contar las lineas del archivo pasado como arguemento
      int ch = 0;
      int count = 0;
      FILE *fileHandle;
@@ -155,4 +190,12 @@ int countLines(const char *file_name){
      fclose(fileHandle);
 
      return count;
+}
+
+char* concat(const char *s1, const char *s2)  //funcion que concatena 2 string
+{
+    char *result = malloc(strlen(s1)+strlen(s2)+1);
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
 }
